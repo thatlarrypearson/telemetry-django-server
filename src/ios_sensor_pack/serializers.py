@@ -10,7 +10,7 @@ class GravitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Gravity
         fields = ['id', 'x', 'y', 'z', 'user', ]
-        read_only_fields = ['user', ]
+        read_only_fields = ['created', 'user', ]
 
 
 class UserAccellerationSerializer(serializers.ModelSerializer):
@@ -19,7 +19,7 @@ class UserAccellerationSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserAcceleration
         fields = ['id', 'x', 'y', 'z', 'user', ]
-        read_only_fields = ['user', ]
+        read_only_fields = ['created', 'user', ]
 
 class AttitudeSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
@@ -27,7 +27,7 @@ class AttitudeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attitude
         fields = ['id', 'roll', 'pitch', 'yaw', 'user']
-        read_only_fields = ['user', ]
+        read_only_fields = ['created', 'user', ]
 
 class MagneticFieldSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
@@ -35,7 +35,7 @@ class MagneticFieldSerializer(serializers.ModelSerializer):
     class Meta:
         model = MagneticField
         fields = ['id', 'x', 'y', 'z', 'accuracy', 'user', ]
-        read_only_fields = ['user', ]
+        read_only_fields = ['created', 'user', ]
 
 
 class LocationSerializer(serializers.ModelSerializer):
@@ -44,10 +44,9 @@ class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
         fields = [
-            'id', 'longitude', 'latitude', 'sat_timestamp', 'altitude',
+            'id', 'longitude', 'latitude', 'timestamp', 'altitude',
             'horizontal_accuracy', 'vertical_accuracy', 'speed', 'course',
-            'user',
+            'sat_timestamp', 'created', 'user',
         ]
-        read_only_fields = ['user', ]
+        read_only_fields = ['sat_timestamp', 'created', 'user', ]
 
-        
