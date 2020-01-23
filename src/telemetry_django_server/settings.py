@@ -20,7 +20,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ngv0i_99lxfh*((+^m=n46etzp*4ps_xfxfx#6#+_*ua6&o29m'
+# SECRET_KEY = 'ngv0i_99lxfh*((+^m=n46etzp*4ps_xfxfx#6#+_*ua6&o29m'
+try:
+    from .secret import SECRET_KEY
+except ImportError as e:
+    import os
+    SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+    if not SECRET_KEY:
+        import random
+        secret_string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
+        SECRET_KEY = ''.join([random.SystemRandom().choice(secret_string) for i in range(50)])
+        with open('telemetry_django_server/secret.py', 'w') as fd:
+            print("SECRET_KEY = '%s'" % (SECRET_KEY, ), file=fd)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
