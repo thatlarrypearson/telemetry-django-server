@@ -71,6 +71,10 @@ The hosts's IP address is needed to access the server from another computer, pho
 
 If, for example, your server's IP address turned out to be ```192.168.1.51```, then the base URL for the web server will be ```http://192.168.1.51:8000/```.
 
+## ```ALLOWED_HOSTS```
+
+Because the client software runs on a computer separate from the server machine, testing changes in the server code using ```python3.8 manage.py runserver 0.0.0.0:8000``` will require adding the host's IP address to ```ALLOWED_HOSTS``` in the ```settings.py``` file.
+
 ## Compatible Python Clients
 
 ### Pythonista Client.
