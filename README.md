@@ -14,6 +14,12 @@
 
 ## Running Server
 
+The following ```python3.8``` commands require the account issuing the commands have write permissions on the local copy of the repository.
+* The ```telemetry-django-server/src/telemetry_django_server``` directory to allow the ```settings.py``` file to write the ```secret.py``` file.
+* The ```telemetry-django-server/src/ios_sensor_pack``` where ```makemigrations``` will create a ```migrations``` directory containing instructions for required to create database tables.
+
+The following commands must be run from the repository's ```telemetry-django-server/src``` directory where the ```manage.py``` file is foundtelemetry-django-server.
+
 ### Create Dataabase
 ```bash
 python3.8 manage.py makemigrations ios_sensor_pack
@@ -49,21 +55,60 @@ The following runs the test/development server so that it is only accessible on 
 python3.8 manage.py runserver
 ```
 
-To run the test/development server so that it is accessible from outside you computer so that it might be accessed from an iPhone or iPad running the Pythonista application, start the server this way:
+To run the test/development server so that it is accessible from outside you computer (e.g. from an iPhone or iPad running the Pythonista application or web browser), start the server this way:
 ```bash
 python3.8 manage.py runserver 0.0.0.0:8000
 ```
 
+### Web Browser Access
+
+The **Telemetry Django Server** can be accessed via a web browser as shown below.
+* Accessing from a web browser on the same machine as the server use [http://127.0.0.1:8000](http://127.0.0.1:8000)
+* Using a web browser to access the server from another host, see the section below on **Access From Another Computer**.
+
+![Home Page](docs/HomePage.png)
+
+From the home page, there are two sections of interest - [Admin](http://127.0.0.1:8000/admin/) and [IOS Sensor Pack](http://127.0.0.1:8000/ios_sensor_pack/).
+
+#### Admin
+
+[Admin](http://127.0.0.1:8000/admin/) is an administrative interface for users like the superuser (see the **Create Superuser** section above).  Access to this area requires the superuser username and password.
+
+![Admin Login Page](http://127.0.0.1/admin/)
+
+Once logged in, a superuser will see the following interface.
+
+![Admin Landing Page](docs/AdminLandingPage.png)
+
+The administrative landing page provides links:
+
+* [Users](http://127.0.0.1:8000/admin/auth/user/) - User administration page where users can be added, be deleted, granted permissions, disabled and passwords reset.
+* [IOS_SENSOR_PACK](http://127.0.0.1:8000/admin/ios_sensor_pack/) section where IOS sensor data can be created, destroyed, modified or browsed.
+
+#### IOS Sensor Pack
+
+Developers may want to explore the [IOS Sensor Pack](http://127.0.0.1:8000/ios_sensor_pack/) API's with their web browser.  The web browser will see a web browser version of the REST API's exposed by the web server.  When doing development work, browser access to the same REST API interface is extremely useful.
+
+The web interface uses a different authentication mechanism than the REST API's used by the [telemetry-pythonista](https://github.com/thatlarrypearson/telemetry-pythonista) client program.  As a result, before accessing the [IOS Sensor Pack](http://127.0.0.1:8000/ios_sensor_pack/) pages, the web browser will need to [login](http://127.0.0.1:8000/accounts/login/) first.
+
+The [Gravity API](http://127.0.0.1:8000/ios_sensor_pack/gravity/) is shown below.
+
+![Gravity API](docs/GravityAPI.png)
+
 ### Access From Another Computer
 The hosts's IP address is needed to access the server from another computer, phone or tablet.  After running the correct command for your operating system, you may have to pick through a list of network interfaces to find the correct one.  Use that address on the other computer.
-* Windows
+* Windows 10
   ````PowerShell
   ipconfig
   ````
+  In the following screen shot, look for the section ***Wireless LAN adapter Wi-Fi***.  Under that heading, see the line starting with ```IPV4 Address```.  In this case, the IPV4 address is ```192.168.1.51```.
+
+  ![Windows 10 ```ipconfig```](docs/Windows10-ipconfig.png)
 * Linux
   ````bash
-  localhost -I
+  hostname -I
   ````
+  ![Linux ```hostname -I```](docs/LinuxHostnameDashI.png)
 * Apple Mac
   ````bash
   ifconfig -a
@@ -74,6 +119,14 @@ If, for example, your server's IP address turned out to be ```192.168.1.51```, t
 ## ```ALLOWED_HOSTS```
 
 Because the client software runs on a computer separate from the server machine, testing changes in the server code using ```python3.8 manage.py runserver 0.0.0.0:8000``` will require adding the host's IP address to ```ALLOWED_HOSTS``` in the ```settings.py``` file.
+
+![```settings.py``` file ```ALLOWED_HOSTS``` Setting](docs/ALLOWED_HOSTS.png)
+
+If you are developing on the same host machine as the web server, consider adding ```127.0.0.1``` to the ALLOWED_HOSTS as shown below.  This will enable a browswer or client on the web server machine to access the website locally.
+
+```python
+ALLOWED_HOSTS = ['192.168.1.51', '127.0.0.1', ]
+```
 
 ## Compatible Python Clients
 
@@ -87,7 +140,7 @@ The server Django code module (application) supporting the Pythonista client is 
 
 A survey of motion data analysis techniques indicated that motion data samples should ideally be made in the 40,000 Hz range.  In other words, the average time between samples should be around 2.5 * 10**(-5) or two point 5 times ten to the minus fifth power. 
 
-Eyballing the actual time between samples to be around 1 to 4 seconds which too slow by more than four orders of magnitude.
+Eyeballing the actual time between samples to be around 1 to 4 seconds which was too slow by more than four orders of magnitude.
 
 The following code can be run on the server to provide average time between samples to see just how good or bad things are.
 ```bash
@@ -110,4 +163,4 @@ for location in locations:
 avg_time = td_sum / td_count
 print(str(avg_time))
 ```
-The results were ```0:00:03.206183```, roughly 3.2 seconds between each sample.  Not exactly promising.
+The results were ```0:00:03.206183```, roughly 3.2 seconds between each sample.  Not exactly promising.  Some of the performance issues are a result of running on the development evironment.  Will need to explore performance issues later.

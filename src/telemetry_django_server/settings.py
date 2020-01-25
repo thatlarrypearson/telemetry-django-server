@@ -36,7 +36,7 @@ except ImportError as e:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.51',]
+ALLOWED_HOSTS = ['127.0.0.1', '192.168.1.51',]
 
 
 # Application definition
