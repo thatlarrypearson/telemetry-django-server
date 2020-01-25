@@ -74,7 +74,7 @@ From the home page, there are two sections of interest - [Admin](http://127.0.0.
 
 [Admin](http://127.0.0.1:8000/admin/) is an administrative interface for users like the superuser (see the **Create Superuser** section above).  Access to this area requires the superuser username and password.
 
-![Admin Login Page](http://127.0.0.1/admin/)
+![Admin Login Page](/docs/AdminLoginPage.png)
 
 Once logged in, a superuser will see the following interface.
 
