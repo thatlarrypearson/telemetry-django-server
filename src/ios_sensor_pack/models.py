@@ -83,3 +83,48 @@ class Location(models.Model):
         return "%d, %f, %f, %f" % (self.id, self.longitude, self.latitude, self.altitude)
 
 
+class IosSensor(models.Model):
+    id = models.BigAutoField(primary_key=True)
+
+    gravity_x = models.FloatField(verbose_name='Gravity X')
+    gravity_y = models.FloatField(verbose_name='Gravity Y')
+    gravity_z = models.FloatField(verbose_name='Gravity Z')
+
+    acceleration_x = models.FloatField(verbose_name='User Acceleration X')
+    acceleration_y = models.FloatField(verbose_name='User Acceleration Y')
+    acceleration_z = models.FloatField(verbose_name='User Acceleration Z')
+
+    attitude_roll = models.FloatField(verbose_name='Attitude X')
+    attitude_pitch = models.FloatField(verbose_name='Attitude Y')
+    attitude_yaw = models.FloatField(verbose_name='Attitude Z')
+
+    magnetic_x = models.FloatField(verbose_name='Magnetic Field X')
+    magnetic_y = models.FloatField(verbose_name='Magnetic Field Y')
+    magnetic_z = models.FloatField(verbose_name='Magnetic Field Z')
+    magnetic_accuracy = models.FloatField(verbose_name='Magnetic Field Accuracy')
+
+    location_longitude = models.FloatField(verbose_name='Location Longitude')
+    location_latitude = models.FloatField(verbose_name='Location Latitude')
+    location_altitude = models.FloatField(verbose_name='Location Altitude')
+    location_timestamp = models.DecimalField(verbose_name='Location Unprocessed IOS Timestamp', max_digits=20, decimal_places=7)
+    location_horizontal_accuracy = models.FloatField(verbose_name='Location Horizontal Accuracy')
+    location_vertical_accuracy = models.FloatField(verbose_name='Location Vertical Accuracy')
+    location_speed = models.FloatField(verbose_name='Location Speed')
+    location_course = models.FloatField(verbose_name='Location Course')
+
+    location_sat_timestamp = models.DateTimeField(verbose_name='Location Satellite Timestamp')
+
+    created = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(get_user_model(), on_delete=models.PROTECT, verbose_name='User')
+
+    def save(self, *args, **kwargs): 
+        t = Time(str(self.location_timestamp), format='unix')
+        self.sat_timestamp = pytz.utc.localize(t.to_datetime())
+        super(IosSensor, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return "%d, %f, %f, %f" % (self.id, self.location_longitude, self.location_latitude, str(self.created))
+
+
+
+

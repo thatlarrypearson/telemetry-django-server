@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_admin_search',
     'rest_framework',
     'telemetry_django_server',
     'ios_sensor_pack',
@@ -91,6 +92,14 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    },
+    '!default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'telemetry',
+        'USER': 'telemetry',
+        'PASSWORD': 'telemetry',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
@@ -139,5 +148,6 @@ STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 1000,
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
