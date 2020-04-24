@@ -165,7 +165,7 @@ A survey of motion data analysis techniques indicated that motion data samples s
 
 Eyeballing the actual time between samples to be around 1 to 4 seconds which was too slow by more than four orders of magnitude.
 
-The following code can be run on the server to provide average time between samples to see just how good or bad things are.
+The following code can be run on the server to provide average time between samples to see just how good or bad things are.   You can see from the results that cycle times are bad and need to be improved.  Version 2 Pythonista Client is considerably faster than version 1.
 
 ```bash
 python3.8 manage.py shell
@@ -173,7 +173,12 @@ python3.8 manage.py shell
 
 Run the following python inside the Django shell.
 
+### Version 1
+
+Version 1 goes with using ```telemetry-pythonista-v1.py``` version 1.
+
 ```python
+# Version 1
 from statistics import mean, median, stdev, quantiles
 from ios_sensor_pack.models import Location
 locations = Location.objects.all().order_by('id')
@@ -198,7 +203,38 @@ print("min: %s\nmax:%s\nmean: %s\nmedian: %s\nstdev: %s\nquantiles: %s" % (
   )
 ```
 
-### Webserver and SQLite Database Running On Windows 10
+### Version2
+
+Version 2 goes with using ```telemetry-pythonista.py``` version 2.  The version 2 client provides the same data as version one only significantly faster.  Faster cycle times are important in data collection.
+
+```python
+# Version 2
+from statistics import mean, median, stdev, quantiles
+from ios_sensor_pack.models import IosSensor
+readings = IosSensor.objects.all().order_by('id')
+old_timestamp = None
+time_difference_list = []
+for reading in readings:
+    if old_timestamp:
+        time_difference = reading.location_sat_timestamp - old_timestamp
+        time_difference_seconds = time_difference.total_seconds()
+        time_difference_list.append(time_difference_seconds)
+
+    old_timestamp = reading.location_sat_timestamp
+
+print("min: %s\nmax: %s\nmean: %s\nmedian: %s\nstdev: %s\nquantiles: %s" % (
+            str(min(time_difference_list)),
+            str(max(time_difference_list)),
+            str(mean(time_difference_list)),
+            str(median(time_difference_list)),
+            str(stdev(time_difference_list)),
+            str(quantiles(time_difference_list)),
+        )
+    )
+~
+```
+
+### Webserver and SQLite Database Running Version 1 On Windows 10
 
 * Intel Core i7-6700HQ CPU @ 2.60 GHz
 * 16 GB RAM
@@ -206,7 +242,7 @@ print("min: %s\nmax:%s\nmean: %s\nmedian: %s\nstdev: %s\nquantiles: %s" % (
 
 The results were ```0:00:03.206183```, roughly 3.2 seconds on average between each sample.  Not exactly promising.  Some of the performance issues are a result of running on the development environment.
 
-### Webserver and SQLite Database Running On Raspberry Pi 3
+### Webserver and SQLite Database Running Version 1 On Raspberry Pi 3
 
 * Ran on development environment.  E.g. '```manage.py runserver```'.
 
@@ -219,7 +255,7 @@ stdev: 10.80137236324451
 quantiles: [15.000168, 21.000098, 26.502295500000002]
 ```
 
-### Webserver and PostgreSQL Database Running On Raspberry Pi 3
+### Webserver and PostgreSQL Database Running Version 1 On Raspberry Pi 3
 
 * Ran on development enviornment. E.g. '```manage.py runserver```'.
 
@@ -230,6 +266,17 @@ mean: 24.951352907407408
 median: 22.5035315
 stdev: 16.27516967176818
 quantiles: [13.00013025, 22.5035315, 28.252490249999997]
+```
+
+### Webserver and SQLite Database Running Version 2 on Raspberry Pi 3
+
+```text
+min: 0.0
+max: 22.541803
+mean: 4.629156619266055
+median: 5.0000564999999995
+stdev: 2.967369645624816
+quantiles: [2.146188, 5.0000564999999995, 6.000069]
 ```
 
 ## PostgreSQL Database Engine
