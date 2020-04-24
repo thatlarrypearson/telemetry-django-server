@@ -8,6 +8,7 @@
 * ```python3.8 -m pip install djangorestframework```
 * ```python3.8 -m pip install markdown       # Markdown support for the browsable API.```
 * ```python3.8 -m pip install django-filter  # Filtering support```
+* ```python3.8 -m pip install django-admin-search```
 
 ### ```ios_sensor_pack``` Specific Dependencies
 
@@ -204,6 +205,19 @@ print("min: %s\nmax:%s\nmean: %s\nmedian: %s\nstdev: %s\nquantiles: %s" % (
 * Ran on development environment.  E.g. '```manage.py runserver```'.
 
 The results were ```0:00:03.206183```, roughly 3.2 seconds on average between each sample.  Not exactly promising.  Some of the performance issues are a result of running on the development environment.
+
+### Webserver and SQLite Database Running On Raspberry Pi 3
+
+* Ran on development environment.  E.g. '```manage.py runserver```'.
+
+```text
+min: 10.000112
+max: 59.008395
+mean: 22.761373432432432
+median: 21.000098
+stdev: 10.80137236324451
+quantiles: [15.000168, 21.000098, 26.502295500000002]
+```
 
 ### Webserver and PostgreSQL Database Running On Raspberry Pi 3
 

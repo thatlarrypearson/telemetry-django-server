@@ -119,7 +119,7 @@ class IosSensor(models.Model):
 
     def save(self, *args, **kwargs): 
         t = Time(str(self.location_timestamp), format='unix')
-        self.sat_timestamp = pytz.utc.localize(t.to_datetime())
+        self.location_sat_timestamp = pytz.utc.localize(t.to_datetime())
         super(IosSensor, self).save(*args, **kwargs)
 
     def __str__(self):
